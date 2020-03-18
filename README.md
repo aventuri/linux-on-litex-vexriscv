@@ -1,5 +1,17 @@
-# Experiments with Linux on LiteX-VexRiscv
+```
+                                   __   _
+                                  / /  (_)__  __ ____ __
+                                 / /__/ / _ \/ // /\ \ /
+                                /____/_/_//_/\_,_//_\_\
+                                      / _ \/ _ \
+                      __   _ __      _\___/_//_/ __             _
+                     / /  (_) /____ | |/_/__| | / /____ __ ____(_)__ _____  __
+                    / /__/ / __/ -_)>  </___/ |/ / -_) \ // __/ (_-</ __/ |/ /
+                   /____/_/\__/\__/_/|_|    |___/\__/_\_\/_/ /_/___/\__/|___/
 
+                   Copyright (c) 2019-2020, Linux on LiteX VexRiscv Developers
+```
+[![](https://travis-ci.com/litex-hub/linux-on-litex-vexriscv.svg?branch=master)](https://travis-ci.com/litex-hub/linux-on-litex-vexriscv) ![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)
 > **Note:** Tested on Ubuntu 18.04.
 
 ## Intro:
@@ -13,20 +25,38 @@ This project demonstrates **how high level HDLs (Spinal HDL, Migen) enable new p
 
 ## Supported boards:
 
-| Name         |       FPGA               |            RAM         |    Flash        |       Ethernet       | SDCard |
-|--------------|--------------------------|------------------------|-----------------|----------------------|--------|
-| Arty         | Artix7 XC7A35T           | 16-bits / 256MB / DDR3 |  16MB / QSPI  	 | 100Mbps / MII        |   No   |
-| NeTV2        | Artix7 XC7A35T           | 32-bits / 512MB / DDR3 |  16MB / QSPI* 	 | 100Mbps / RMII       |   Yes* |
-| Genesys2     | Kintex7 XC7K325T         | 32-bits /   1GB / DDR3 |  32MB / QSPI* 	 |   1Gbps / RGMII*     |   Yes* |
-| KCU105       | Kintex Ultrascale XCKU40 | 64-bits /   1GB / DDR4 |  64MB / QSPI* 	 |   1Gbps / 1000BASE-X |   Yes* |
-| Nexys4DDR    | Artix7 XC7A100T          | 16-bits / 128MB / DDR2 |  16MB / QSPI* 	 | 100Mbps / RMII       |   Yes* |
-| Nexys Video  | Artix7 XC7A200T          | 16-bits / 512MB / DDR3 |  32MB / QSPI* 	 |   1Gbps / RMII*      |   Yes* |
-| Versa ECP5   | ECP5 LFE5UM5G-45F        | 16-bits / 128MB / DDR3 |  16MB / QSPI* 	 |   1Gbps / RGMII      |   No   |
-| ULX3S        | ECP5 LFE5U-45F           | 16-bits /  32MB / SDR  |   4MB / QSPI* 	 |         No           |   Yes* |
-| miniSpartan6+| Spartan6 XC6SLX25        | 16-bits /  32MB / SDR  |   8MB / QSPI* 	 |         No           |   Yes* |
-| De0Nano      | Altera Cyclone4 EP4CE22F | 16-bits /  32MB / SDR  |      No         |         No           |   No   |
+| Name         | FPGA Family         | FPGA device   | CPU Frequency |        RAM         |    Flash      |       Ethernet     | SDCard |
+|--------------|---------------------|---------------|---------------|--------------------|---------------|--------------------|--------|
+| Arty(A7)     | Xilinx Artix7       | XC7A35T       |    100MHz     | 16-bits 256MB DDR3 |  16MB QSPI    | 100Mbps MII        |   No   |
+| NeTV2        | Xilinx Artix7       | XC7A35T       |    100MHz     | 32-bits 512MB DDR3 |  16MB QSPI*   | 100Mbps RMII       |   Yes* |
+| Genesys2     | Xilinx Kintex7      | XC7K325T      |    125MHz     | 32-bits   1GB DDR3 |  32MB QSPI*   |   1Gbps RGMII*     |   Yes* |
+| KC705        | Xilinx Kintex7      | XC7K325T      |    125MHz     | 64-bits   1GB DDR3 |  32MB QSPI*   |   1Gbps GMII       |   Yes* |
+| KCU105       | Xilinx KintexU      | XCKU40        |    125MHz     | 64-bits   1GB DDR4 |  64MB QSPI*   |   1Gbps 1000BASE-X |   Yes* |
+| ZCU104       | Xilinx ZynqU+       | XCZU7EV       |    125MHz     | 64-bits   1GB DDR4 |  64MB QSPI*   |   1Gbps RGMII*     |   Yes* |
+| Nexys4DDR    | Xilinx Artix7       | XC7A100T      |    100MHz     | 16-bits 128MB DDR2 |  16MB QSPI*   | 100Mbps RMII       |   Yes* |
+| Nexys Video  | Xilinx Artix7       | XC7A200T      |    100MHz     | 16-bits 512MB DDR3 |  32MB QSPI*   |   1Gbps RMII*      |   Yes* |
+| miniSpartan6 | Xilinx Spartan6     | XC6SLX25      |     80MHz     | 16-bits  32MB SDR  |   8MB QSPI*   |         No         |   Yes* |
+| Pipistrello  | Xilinx Spartan6     | XC6SLX45      |     83MHz     | 16-bits  64MB LPDDR|  16MB QSPI*   |         No         |   Yes* |
+| Versa ECP5   | Lattice ECP5        | LFE5UM5G 45F  |     75MHz     | 16-bits 128MB DDR3 |  16MB QSPI*   |   1Gbps RGMII      |   No   |
+| HADBadge     | Lattice ECP5        | LFE5U-45F     |     48MHz     |  8-bits  32MB SDR  |  16MB QSPI*   |         No         |   No   |
+| ULX3S        | Lattice ECP5        | LFE5U 45F     |     50MHz     | 16-bits  32MB SDR  |   4MB QSPI*   |         No         |   Yes* |
+| OrangeCrab   | Lattice ECP5        | LFE5U 25F     |     48MHz     | 16-bits 128MB SDR  |   4MB QSPI*   |         No         |   Yes* |
+| CamLink 4K   | Lattice ECP5        | LFE5U 25F     |     81MHz     | 16-bits 128MB SDR  |      No       |         No         |   No   |
+| De0Nano      | Intel Cyclone4      | EP4CE22F      |     50MHz     | 16-bits  32MB SDR  |      No       |         No         |   No   |
+| De10Lite     | Intel MAX10         | 10M50DA       |     50MHz     | 16-bits  64MB SDR  |      No       |         No         |   No   |
+| De10Nano     | Intel Cyclone5      | 5CSEBA6U23I7  |     50MHz     | 16-bits  32MB SDR  |      No       |         No         |   No   |
+| Avalanche    | Microsemi PolarFire | MPF300TS      |    100MHz     | 16-bits 256MB DDR3 |   8MB QSPI*   |   1Gbps RGMII*     |   No   |
 
 > **Note:** \*=present on the board but not yet supported.
+
+> **Note:** Avalanche support can be found in [RISC-V - Getting Started Guide](https://risc-v-getting-started-guide.readthedocs.io/en/latest/linux-avalanche.html) thanks to [Antmicro](https://antmicro.com).
+
+## Prerequisites
+```sh
+$ sudo apt install build-essential device-tree-compiler wget git python3-setuptools
+$ git clone https://github.com/enjoy-digital/linux-on-litex-vexriscv
+$ cd linux-on-litex-vexriscv
+```
 
 ## Pre-built Bitstreams/Linux images
 Pre-built bistreams for the supported board and pre-built Linux images can be found in the [linux-on-litex-vexriscv-prebuilt](https://github.com/enjoy-digital/linux-on-litex-vexriscv-prebuilt) repository and allow doing
@@ -42,21 +72,24 @@ $ cp -r linux-on-litex-vexriscv-prebuilt/* linux-on-litex-vexriscv
 ## Installing LiteX
 ```sh
 $ wget https://raw.githubusercontent.com/enjoy-digital/litex/master/litex_setup.py
-$ ./litex_setup.py init install --user
+$ chmod +x litex_setup.py
+$ ./litex_setup.py init
+$ sudo ./litex_setup.py install
 ```
 ## Installing a RISC-V toolchain
 ```sh
-$ wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-20171231-x86_64-linux-centos6.tar.gz
-$ tar -xvf riscv64-unknown-elf-gcc-20171231-x86_64-linux-centos6.tar.gz
-$ export PATH=$PATH:$PWD/riscv64-unknown-elf-gcc-20171231-x86_64-linux-centos6/bin/
+$ wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.1.0-2019.01.0-x86_64-linux-ubuntu14.tar.gz
+$ tar -xvf riscv64-unknown-elf-gcc-8.1.0-2019.01.0-x86_64-linux-ubuntu14.tar.gz
+$ export PATH=$PATH:$PWD/riscv64-unknown-elf-gcc-8.1.0-2019.01.0-x86_64-linux-ubuntu14/bin/
 ```
 ## Installing Verilator (only needed for simulation)
 ```sh
-$ apt install verilator
-$ apt install libevent-dev libjson-c-dev
+$ sudo apt install verilator
+$ sudo apt install libevent-dev libjson-c-dev
 ```
 ## Installing OpenOCD (only needed for hardware test)
 ```sh
+$ sudo apt install libtool automake pkg-config libusb-1.0-0-dev
 $ git clone https://github.com/ntfreak/openocd.git
 $ cd openocd
 $ ./bootstrap
@@ -186,16 +219,18 @@ To load the bitstream to you board, run:
 ```sh
 $ ./make.py --board=XXYY --load
 ```
+> **Note**: If you are using a Versa board, you will need to change J50 to bypass the iSPclock. Re-arrange the jumpers to connect pins 1-2 and 3-5 (leaving one jumper spare). See p19 of the Versa Board user guide.
 ### Load the Linux images over Serial
 All the boards support Serial loading of the Linux images and this is the only way to load them when the board does not have others communications interfaces or storage capability.
 
 To load the Linux images over Serial, use the [lxterm](https://github.com/enjoy-digital/litex/blob/master/litex/tools/litex_term.py) terminal/tool provided by LiteX and run:
 ```sh
-$ lxterm --images=images.json /dev/ttyUSBX
+$ lxterm --images=images.json /dev/ttyUSBX --speed=1e6 --no-crc
 ```
 The images should load and you should see Linux booting :)
 
 > **Note**: lxterm is automatically installed with LiteX.
+
 > **Note:** since on some boards JTAG/Serial is shared, when you will run lxterm after loading the board, the BIOS serialboot will already have timed out. You will need to press Enter, see if you have the BIOS prompt and type *reboot*.
 
 Since loading over Serial is working for all boards, **this is the recommended way to do initial tests** even if your board has more capabilities.
@@ -213,18 +248,21 @@ SPI Flash and directly loaded during boot.
 
 To flash the bitstream and linux images to you board, run:
 ```sh
-$ ./make.py --board=XXYY --flash
+$ ./make.py --board=XXYY --fbi --flash
 ```
 
-When done, the FPGA of the board should automatically reload itself from the SPI-Flash, start the BIOS, copy
-the Linux images to RAM and boot :)
+When done, reload the FPGA of the board with:
+```sh
+$ ./make.py --board=XXYY --load
+```
+
+The system should run the LiteX BIOS, copy the images from SPI Flash to RAM and boot Linux :)
 
 ## Generating the Linux binaries (optional)
 ```sh
 $ git clone http://github.com/buildroot/buildroot
 $ cd buildroot
-$ cp -r ../linux-litex-vexriscv/buildroot/* ./
-$ make litex_vexriscv_defconfig
+$ make BR2_EXTERNAL=../linux-on-litex-vexriscv/buildroot/ litex_vexriscv_defconfig
 $ make
 ```
 The binaries are located in *output/images/*.
@@ -232,9 +270,18 @@ The binaries are located in *output/images/*.
 ## Generating the VexRiscv Linux variant (optional)
 Install VexRiscv requirements: https://github.com/enjoy-digital/VexRiscv-verilog#requirements
 
-Clone VexRiscv repository and generate the Linux variant:
+Clone the VexRiscv repository and generate the Linux variant:
 ```sh
 $ git clone http://github.com/enjoy-digital/Vexriscv-verilog --recursive
 $ sbt "runMain vexriscv.GenCoreDefault --externalInterruptArray=true --csrPluginConfig=linux-minimal"
 ```
 The Linux variant is the *VexRiscv.v* file.
+
+## Udev rules (optional)
+Not needed but can make loading/flashing bitstreams easier:
+```sh
+$ git clone https://github.com/litex-hub/litex-buildenv-udev
+$ cd litex-buildenv-udev
+$ make install
+$ make reload
+```
