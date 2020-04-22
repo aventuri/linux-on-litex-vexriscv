@@ -13,7 +13,6 @@ from litex.soc.integration.soc_core import *
 from litex.soc.integration.soc_sdram import *
 from litex.soc.integration.builder import *
 from litex.soc.interconnect import wishbone
-from litex.soc.cores import uart
 
 from litedram import modules as litedram_modules
 from litedram.phy.model import SDRAMPHYModel
@@ -77,7 +76,6 @@ class SoCLinux(SoCSDRAM):
         "timer0":     1,
     }}
     mem_map = {**SoCSDRAM.mem_map, **{
-        "emulator_ram": 0x20000000,
         "ethmac":       0xb0000000,
         "spiflash":     0xd0000000,
         "csr":          0xf0000000,
@@ -99,14 +97,15 @@ class SoCLinux(SoCSDRAM):
                 "buildroot/Image":       "0x00000000",
                 "buildroot/rootfs.cpio": "0x00800000",
                 "buildroot/rv32.dtb":    "0x01000000",
+                "emulator/emulator.bin": "0x01100000",
                 }, "little")
 
         # SoCSDRAM ----------------------------------------------------------------------------------
         SoCSDRAM.__init__(self, platform, clk_freq=sys_clk_freq,
             cpu_type                 = "vexriscv", cpu_variant="linux",
-            with_uart                = False,
+            uart_name                = "sim",
             l2_reverse               = False,
-            max_sdram_size           = 0x10000000, # Limit mapped SDRAM to 256MB for now
+            max_sdram_size           = 0x10000000, # Limit mapped SDRAM to 1GB.
             integrated_rom_size      = 0x8000,
             integrated_main_ram_size = 0x00000000 if with_sdram else 0x02000000, # 32MB
             integrated_main_ram_init = [] if (with_sdram or not init_memories) else ram_init)
@@ -120,10 +119,8 @@ class SoCLinux(SoCSDRAM):
         self.submodules.crg = CRG(platform.request("sys_clk"))
 
         # Machine mode emulator RAM ----------------------------------------------------------------
-        emulator_rom = get_mem_data("emulator/emulator.bin", "little") if init_memories else []
-        self.submodules.emulator_ram = wishbone.SRAM(0x4000, init=emulator_rom)
-        self.register_mem("emulator_ram", self.mem_map["emulator_ram"], self.emulator_ram.bus, 0x4000)
-        self.add_constant("ROM_BOOT_ADDRESS",self.mem_map["emulator_ram"])
+        self.add_memory_region("emulator", self.mem_map["main_ram"] + 0x01100000, 0x4000, type="cached+linker")
+        self.add_constant("ROM_BOOT_ADDRESS", self.bus.regions["emulator"].origin)
 
         # SDRAM ------------------------------------------------------------------------------------
         if with_sdram:
@@ -149,12 +146,6 @@ class SoCLinux(SoCSDRAM):
             self.add_constant("MEMTEST_BUS_SIZE",  0)
             self.add_constant("MEMTEST_ADDR_SIZE", 0)
             self.add_constant("MEMTEST_DATA_SIZE", 0)
-
-        # Serial -----------------------------------------------------------------------------------
-        self.submodules.uart_phy = uart.RS232PHYModel(platform.request("serial"))
-        self.submodules.uart = uart.UART(self.uart_phy)
-        self.add_csr("uart", use_loc_if_exists=True)
-        self.add_interrupt("uart", use_loc_if_exists=True)
 
         # Ethernet ---------------------------------------------------------------------------------
         if with_ethernet:
